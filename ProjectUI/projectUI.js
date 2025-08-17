@@ -4,7 +4,7 @@ const doubleBtn = document.getElementById("double");
 const showMillionairesBtn = document.getElementById("show_millionaires");
 const showBrillionsBtn = document.getElementById("show_brillions");
 const sortBtn = document.getElementById("sort");
-const sortless = document.getElementById("sortless");
+const sortlessBtn = document.getElementById("sortless");
 const calculateWealthBtn = document.getElementById("calculate_wealth");
 
 let Persondata = [];
@@ -26,11 +26,32 @@ async function getRandomUser() {
   addData(newUser);
 }
 
-// Double everyones money
+// Double everyones money using map
 function doubleMoney() {
   Persondata = Persondata.map((user) => {
     return { ...user, money: user.money * 2 };
   });
+  updateDOM();
+}
+
+// Sorting by the Richest using sort
+function sortRichest() {
+  Persondata.sort(function (first, second) {
+    return first.money - second.money;
+  });
+  updateDOM();
+}
+
+// Sorting by the least using sort
+function leastRichest() {
+  Persondata.sort((first, second) => second.money - first.money);
+
+  updateDOM();
+}
+
+// Showing only Millionaires uisng filter
+function showMillionaires() {
+  Persondata = Persondata.filter((user) => user.money > 100000000);
   updateDOM();
 }
 
@@ -41,10 +62,26 @@ function addData(obj) {
   updateDOM();
 }
 
+// Showing Brillions using filter
+function showBrillions() {
+  Persondata = Persondata.filter((user) => user.money > 1000000000);
+  updateDOM();
+}
+
+// showing all the total
+function calculateWealth() {
+  const wealth = Persondata.reduce((acc, number) => (acc += number.money), 0);
+  const wealthElement = document.createElement("div");
+  wealthElement.innerHTML = `<h3>Total Wealth: <strong>${formatMoney(
+    wealth
+  )}</strong></h3>`;
+  main.appendChild(wealthElement);
+}
+
 // Update DOM
 function updateDOM(providedData = Persondata) {
   // clear main div
-  main.innerHTML = "<h2><stron>Person</stron>Wealth</h2>";
+  main.innerHTML = "<h2><strong>Person</strong>Wealth</h2>";
 
   providedData.forEach((item) => {
     const element = document.createElement("div");
@@ -64,3 +101,8 @@ function formatMoney(number) {
 // Event Listeners to add user
 addUserBtn.addEventListener("click", getRandomUser);
 doubleBtn.addEventListener("click", doubleMoney);
+sortBtn.addEventListener("click", sortRichest);
+sortlessBtn.addEventListener("click", leastRichest);
+showMillionairesBtn.addEventListener("click", showMillionaires);
+showBrillionsBtn.addEventListener("click", showBrillions);
+calculateWealthBtn.addEventListener("click", calculateWealth);
